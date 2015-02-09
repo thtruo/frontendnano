@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Meme</title>
+</head>
+<body>
+  <canvas id="c" width="264" height="300"></canvas>
+  <script type="text/javascript">
+    var c     = document.querySelector("#c");
+    var ctx   = c.getContext("2d");
+    var image = new Image();
+
+    image.onload = function() {
+      console.log("Image loaded");
+      ctx.drawImage(image, 0, 0, c.width, c.height);
+      makeGrayscale();
+    };
+    image.src = "seascape.jpeg"; // 264 × 300
+
+    var makePixelGrayScale = function (r, g, b, a) {
+      var y = (r + g + b) / 3; // dirty average
+      // var y = (0.3 * r) + (0.59 * g) + (0.11 * b); // optimized version
+      return {
+        r : y,
+        g : y,
+        b : y,
+        a : y
+      };
+    };
+
+    function makeGrayscale() {
+      var r, g, b, a;
+      var imgData = ctx.getImageData(0, 0, c.width, c.height);
+      var numPixels = imgData.data.length / 4;
+      for (var i = 0; i < numPixels; i++) {
+        r = imgData.data[i * 4];
+        g = imgData.data[i * 4 + 1];
+        b = imgData.data[i * 4 + 2];
+        a = imgData.data[i * 4 + 3];
+
+        var pixel = makePixelGrayScale(r, g, b, a);
+        imgData.data[i * 4] = pixel.r;
+        imgData.data[i * 4 + 1] = pixel.g;
+        imgData.data[i * 4 + 2] = pixel.b;
+        imgData.data[i * 4 + 3] = pixel.a;
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    function putPixelValue(imgData, pixel, r, g, b, a) {
+      imgData.data[pixel] = r;
+      imgData.data[pixel + 1] = g;
+      imgData.data[pixel + 2] = b;
+      imgData.data[pixel + 3] = a;
+    }
+
+  </script>
+</body>
+</html>
