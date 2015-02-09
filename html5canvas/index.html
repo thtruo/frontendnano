@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Meme Generator</title>
+</head>
+<body>
+  <canvas id="c" width="500" height="500"></canvas>
+  <script type="text/javascript">
+    var c     = document.querySelector("#c");
+    var ctx   = c.getContext("2d");
+    var image = new Image();
+
+    image.onload = function() {
+      console.log("Image loaded");
+      ctx.drawImage(image, 0, 0, c.width, c.height);
+    };
+
+    image.src = "wonka.png";
+
+    ctx.strokeStyle = "black";
+    ctx.fillStyle   = "black";
+    ctx.strokeText("CANVAS MEME!", 50, 50);
+
+  </script>
+</body>
+</html>

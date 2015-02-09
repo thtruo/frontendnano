@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Draw Rectangles</title>
+</head>
+<body>
+  <canvas id="c" width="500" height="500"></canvas>
+  <script type="text/javascript">
+    var c     = document.querySelector("#c");
+    var ctx   = c.getContext("2d");
+
+    ctx.fillStyle = "blue"; // chooses color
+
+    ctx.fillRect(100, 100, 100, 100); // start at (100, 100) and 100x100 rect
+    ctx.strokeRect(50, 50, 50, 50);   // top left
+    ctx.strokeRect(200, 200, 50, 50); // bottom right
+    ctx.strokeRect(200, 50, 50, 50);  // top right
+    ctx.strokeRect(50, 200, 50, 50);  // bottom left
+
+    // Use clearRect() to erase the entire canvas
+    // ctx.clearRect(0, 0, c.width, c.height);
+    ctx.clearRect(0, 0, 150, 150);
+  </script>
+</body>
+</html>
