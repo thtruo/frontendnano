@@ -10,6 +10,7 @@
     var c     = document.querySelector("#c");
     var ctx   = c.getContext("2d");
     var image = new Image();
+    image.src = "allthethings.jpeg";
 
     image.onload = function() {
       console.log("Image loaded");
@@ -22,7 +23,23 @@
       ctx.strokeText("CANVAS MEME!", c.width / 2, 40);
     };
 
-    image.src = "allthethings.jpeg";
+
+    // var imgData = ctx.getImageData(0, 0, 100,100);
+    // function paintGreen (imgData) {
+    //   for (var i = 0; i < imgData.data.length; i++) {
+    //     if ((i + 1) % 10 === 0) {
+    //       for (var j = i; j < i + 4; j++) {
+    //         if (j === i + 1 || j === i + 3) {
+    //           imgData.data[j] = 255;
+    //         }
+    //         else {
+    //           imgData.data[i] = 0;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+    // paintGreen(imgData);
 
   </script>
 </body>
