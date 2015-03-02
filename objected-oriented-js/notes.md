@@ -373,7 +373,7 @@ Subclass prototype delegation works like the following:
     var Car = function(loc) {
         this.loc = loc;
     };
-    Car.prototype.move  = function() {
+    Car.prototype.move = function() {
         this.loc++;
     };
     var Van = function(loc) {
@@ -388,3 +388,5 @@ Summary
 =======
 
 You've gone over scopes, closures, this, and prototype chains. In addition, you learned about function decorators and other code reuse techniques for implementing subclassing over prototype chains.
+
+**Sources** [Summary](https://docs.google.com/document/d/1F9DY2TtWbI29KSEIot1WXRqqao7OCd7OOC2W3oubSmc/pub)
