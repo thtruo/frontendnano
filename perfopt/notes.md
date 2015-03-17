@@ -84,10 +84,104 @@ Let's review the step order of rendering an HTML document.
 You can use [CSS minification](https://developers.google.com/speed/pagespeed/service/MinifyCSS) and [inlining and prioritizing "critical CSS"](https://developers.google.com/speed/pagespeed/service/PrioritizeCriticalCss) to optimize performance.
 
 
+#Optimizing the CRP
+
+##Optimizing the DOM
+###Fewer bytes...faster renders
+
+- Learn more about [resource minification](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer#minification-preprocessing--context-specific-optimizations)
+- Learn more about [text compression with gzip](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/optimize-encoding-and-transfer#text-compression-with-gzip)
+- Learn more about [HTTP caching](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching)
+
+We focus on optimizing the DOM and CCSOM (the steps that come before the Render tree) because these are usually the worst performance offenders. For the DOM, we want to minimize the size of the HTML file aka minification. Once that's done you want to compress the file and cache it.
+
+While these are great techniques to start with first, remember that CSS blocks rendering. So another optimization strategy is to avoid Rendering Blocking CSS. Since CSS is a render blocking resource, get it down to the client as soon as as quickly as possible to optimize the time to first render.
+
+So why does CSS block rendering? That is because without the CSSOM fully loaded, the browser cannot fully render a page.
+
+##Unblock CSS With Media Queries
+CSS allows us to scope styles to particular conditions, using media queries. Thus sometimes it is useful to split CSS into multiple files in order to not have to block rendering. For example in a situation like so:
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="style-print.css" media=print>
+The browser still downloads both stylesheets, but the second sheet does not block rendering of the page. This improves performance in two ways: (1) the second file does not have to block rendering, and (2) we've got fewer bytes to wait for before we can render the page. Again, you can read more about media queries from [Responsive Web Design Basics](https://developers.google.com/web/fundamentals/layouts/rwd-fundamentals/).
+
+#Optimizing Javascript
+
+##All the things that block rendering.
+Minify, compress, and cache it. However, Javascript is parser blocking because it blocks DOM construction when the browser hits the `<script>` tag. The browser blocks the DOM from being fully constructed while waiting for the script file to be downloaded. This is particularly bad when your `<script>` points to another Javascript file, which causes the browser to have to fetch the file and blocking construction of the DOM - it takes a while. So why not just use inline Javascript throughout your code? Well, there are tradeoffs. Inlining Javascript may help limit requests, but the downside is having redundant code.
+
+###External Javascript Dependencies
+Consider an example like below:
+
+	<style src="style.css" /> <!-- p {color: black}
+	<p>
+		Awesome page 
+		<script>
+			var e = document.getElementsByTagName("p")[0];
+			e.style.color = "red";
+		</script>
+		is awesome
+	</p>
+The browser requests the HTML. As soon as it gets the response it starts building the DOM. It then discovers the CSS and sends the request. Then the parser continues and finds the `<script>` tag, at which point it has to block. It doesn't know what the script is going to do, because the script may want to try accessing the CSS properties, so it blocks script execution until the CSS arrives and builds the CSSOM. Only then can we run the Javascript and then finish building the DOM.
+
+CSS blocks rendering and blocks Javascript execution, which is why it is crucial to optimize your CSS.
+
+###Async Javascript
+Notice that some scripts don't modify the DOM and, really they shouldn't be blocking rendering. Analytics is a great example. We have two strategies to tell the browser exactly that. 
+
+One strategy is to load the script after the page has loaded. The browser fires an onload event (see `window.onload` event) when the page is finished loading. You can wait for that and then execute your script then.
+
+The second strategy is simpler using the `async` attribute to the script tag. It has two properties: 
+- it does not block DOM construction
+- it does not block **on** CSSOM
+Async does not block the CPR. But it doesn't work for inline scripts which always block on the CSSOM. Exception is when you run the script before the CSS.
+
+###Bonus - TCP Slow Start
+See the formula that models how long it takes to download a file given the initial CWND, packet size, and roundtrip time (RTT) at [the secotion on TCP slow-start](http://chimera.labs.oreilly.com/books/1230000000545/ch02.html#SLOW_START).
+
+#General Strategies
+##Recap
+###Minify, Compress, Cache
+- HTML, CSS, Javascript
+
+###Minimize use of **render blocking** resources (CSS)
+1. Use media queries on <link> to unblock rendering
+2. Inline CSS
+
+###Minimize use of **parser blocking** resources (JS)
+1. Defer Javascript execution
+2. Use `async` attribute on `<script>`
+
+All these ideas is all about reducing the amount of data that needs to get sent down the wire - **minimize bytes**. Furthermore, the we want to **reduce critical resources**. Finally, we want to **shorten the CRP length**.
+
+###Note
+PageSpeed Insights encourage having small HTML file sizes like < 14kb in order to reduce the number of roundtrips it takes to get HTML responses. This is low level detail which you can learn more from reading the *High Performance Browser Networking* book.
+Keeping your eyes on CRP metrics will help you optimize performance
+
+- number of critical resources
+- total critical KB
+- minimum critical path length (roudtrips)
+
+The browser can download both the CSS and Javascript in parallel
+
+##Strategies
+1. Inline CSS and inline JS.
+2. Media query for CSS and async JS.
+
+##The Preload Scanner
+Read [How the Browser Pre-loader Makes Pages Load Faster](http://andydavies.me/blog/2013/10/22/how-the-browser-pre-loader-makes-pages-load-faster/)
+The preload scanner in the browser peeks ahead in the document and tries to discover critical CSS and JS files and requests them while the parser is blocked.
+
+
+
 # Sources
+- [Udacity Wiki on Perf Resources](https://www.udacity.com/wiki/ud884)
 - [Chrome Device Mode](https://developer.chrome.com/devtools/docs/device-mode)
 - [Android Remote Debugging](https://developer.chrome.com/devtools/docs/remote-debugging)
 - [Modern Web Development](https://developers.google.com/web/fundamentals/)
 - [ChunkScatter](http://blog.cowchimp.com/chunk-scatter-http-chunked-response-analysis-tool/)
 - [CSSOM Construction](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/constructing-the-object-model#css-object-model-cssom)
-- [CSS Blocks Rendering](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-blocking-css) 
+- [CSS Blocks Rendering](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/render-blocking-css)
+-[Critical Rendering Path Perf Patterns](https://developers.google.com/web/fundamentals/performance/critical-rendering-path/analyzing-crp#performance-patterns)
+-[PageSpeed mobile analysis - less than 1 second rendering](https://developers.google.com/speed/docs/insights/mobile)
+-[TCP Slow Start from "High Performance Browser Networking"](http://chimera.labs.oreilly.com/books/1230000000545/index.html) 
