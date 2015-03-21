@@ -10,7 +10,7 @@ html {
   height: 20em;
   width: 20em;
   margin-top: 10%;
-  margin-left: 35%;
+  margin-left: 35%
   /*padding-bottom: 31%;*/
 }
 
@@ -22,10 +22,25 @@ html {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
   width: 5%;
   height: 5%;
   z-index: 10;
+}
+
+@-webkit-keyframes rotate {
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+  }
+}
+
+@keyframes rotate {
+  100% {
+    -webkit-transform: rotateZ(360deg);
+            transform: rotateZ(360deg);
+  }
 }
 
 .hours-container, .minutes-container, .seconds-container {
@@ -33,8 +48,22 @@ html {
   top: 0;
   right: 0;
   bottom: 0;
-  left: 0;
-  /*background: #aaa;*/
+  left: 0
+}
+
+.hours-container {
+  -webkit-animation: rotate 43200s infinite linear;
+          animation: rotate 43200s infinite linear;
+}
+
+.minutes-container {
+  -webkit-animation: rotate 3600s infinite linear;
+          animation: rotate 3600s infinite linear;
+}
+
+.seconds-container {
+  -webkit-animation: rotate 60s infinite linear;
+          animation: rotate 60s infinite linear;
 }
 
 .hours {
@@ -43,9 +72,11 @@ html {
   left: 48.75%;
   position: absolute;
   top: 30%;
-  transform-origin: 50% 100%;
+  -webkit-transform-origin: 50% 100%;
+          transform-origin: 50% 100%;
   width: 2.5%;
-  transform: rotate(270deg);
+  -webkit-transform: rotate(270deg);
+          transform: rotate(270deg);
 }
 
 .minutes {
@@ -54,9 +85,11 @@ html {
   left: 49%;
   position: absolute;
   top: 10%;
-  transform-origin: 50% 100%;
+  -webkit-transform-origin: 50% 100%;
+          transform-origin: 50% 100%;
   width: 2.5%;
-  transform: rotate(40deg);
+  -webkit-transform: rotate(40deg);
+          transform: rotate(40deg);
 }
 
 .seconds {
@@ -65,8 +98,8 @@ html {
   left: 49.5%;
   position: absolute;
   top: 14%;
-  transform-origin: 50% 80%;
+  -webkit-transform-origin: 50% 80%;
+          transform-origin: 50% 80%;
   width: 1%;
-  /*transform: rotate(90deg);*/
   z-index: 8;
 }
