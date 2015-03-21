@@ -25,6 +25,53 @@
     </div>
   </article>
 
+  <script type="text/javascript">
+  /*
+   * Starts any clocks using the user's local time.
+   * Source: cssanimation.rocks/clocks
+   */
+   function initLocalClocks() {
+     // Get the local time
+     var date = new Date();
+     var seconds = date.getSeconds();
+     var minutes = date.getMinutes();
+     var hours = date.getHours();
+
+console.log('hour: ' + hours);
+console.log('minute: ' + minutes);
+console.log('second: ' + seconds);
+
+     // Create an object with each hand and it's angle in degrees
+     var hands = [
+      {
+        hand: 'hours',
+        angle: (hours * 30) + (minutes / 2)
+      },
+      {
+        hand: 'minutes',
+        angle: (minutes * 6)
+      },
+      {
+        hand: 'seconds',
+        angle: (seconds * 6)
+      }
+     ];
+
+      // Set angle for each hand
+      for (var i = 0; i < hands.length; i++) {
+        var elems = document.querySelectorAll('.' + hands[i].hand);
+        for (var j = 0; j < elems.length; j++) {
+          elems[j].style.webkitTransform = 'rotateZ(' + hands[i].angle + 'deg)';
+          elems[j].style.transform = 'rotateZ(' + hands[i].angle + 'deg)';
+          // Note seconds position for minute hands
+          if (hands[i].hand === 'minutes') {
+            elems[j].parentNode.setAttribute('data-second-angle', hands[i + 1].angle);
+          }
+        }
+      }
+   }
+   initLocalClocks();
+  </script>
 </body>
 
 </html>

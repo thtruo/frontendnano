@@ -57,13 +57,13 @@ html {
 }
 
 .minutes-container {
-  -webkit-animation: rotate 3600s infinite linear;
-          animation: rotate 3600s infinite linear;
+  -webkit-animation: rotate 3600s infinite steps(60);
+          animation: rotate 3600s infinite steps(60);
 }
 
 .seconds-container {
-  -webkit-animation: rotate 60s infinite linear;
-          animation: rotate 60s infinite linear;
+  -webkit-animation: rotate 60s infinite steps(60);
+          animation: rotate 60s infinite steps(60);
 }
 
 .hours {
